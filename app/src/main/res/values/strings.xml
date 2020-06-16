@@ -1,0 +1,57 @@
+<resources>
+    <string name="app_name">DigiPub</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="start_tracking">Start tracking</string>
+    <string name="stop_tracking">Stop tracking</string>
+    <string name="notification_channel_description">Displays temperature data</string>
+    <string name="warning_notification_channel_description">Shows warnings about your battery temperature</string>
+    <string name="battery_too_hot_title">Battery too HOT !</string>
+    <string name="battery_too_hot_message">This may reduce the lifetime of your battery</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="stop">STOP</string>
+
+    <!-- Strings related to Settings -->
+    <string name="settings">Settings</string>
+
+    <string name="general">General</string>
+    <string name="measuring_unit">Measuring unit</string>
+    <string name="measuring_unit_summary">Change the default measuring unit</string>
+    <string name="launch_at_startup">Launch at startup</string>
+    <string name="startup_launch_summary">Automatically start displaying the temperature at startup</string>
+
+    <string name="notifications">Notifications</string>
+    <string name="allow_notifications">Allow notifications</string>
+    <string name="allow_warning_notification_summary">Warn me when my battery is too hot</string>
+    <string name="warning_temperature">Warning temperature</string>
+    <string name="warning_temperature_summary">Send a notification when the battery temperature is strictly greater than the specified value</string>
+
+    <!-- Keys for preferences -->
+    <string name="key_measuring_unit" translatable="false">key_measuring_unit</string>
+    <string name="key_startup_launch" translatable="false">key_startup_launch</string>
+    <string name="key_warning_temperature" translatable="false">key_warning_temperature</string>
+    <string name="key_on_off_notification" translatable="false">key_on_off_notification</string>
+
+    <!-- Add IDs -->
+    <string name="banner_add_id" translatable="false">banner-id</string>
+    <string name="admob_app_id" translatable="false">app-id</string>
+
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+
+    <string name="float_value">%.4f</string>
+</resources>

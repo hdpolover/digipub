@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/general">
+        <!-- Measuring unit List -->
+        <!-- Default value: Celsius -->
+        <ListPreference
+            android:dialogTitle="@string/measuring_unit"
+            android:entries="@array/pref_measuring_unit"
+            android:entryValues="@array/pref_measuring_unit_values"
+            android:key="@string/key_measuring_unit"
+            android:summary="@string/measuring_unit_summary"
+            android:title="@string/measuring_unit" />
+
+        <!-- Launch at startup toggle button -->
+        <!-- Default value: ON -->
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="@string/key_startup_launch"
+            android:summary="@string/startup_launch_summary"
+            android:title="@string/launch_at_startup" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/notifications">
+        <!-- Enable notifications toggle button -->
+        <!-- Default value: ON -->
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="@string/key_on_off_notification"
+            android:summary="@string/allow_warning_notification_summary"
+            android:title="@string/allow_notifications" />
+
+        <!-- Warning temperature integer entry -->
+        <!-- Default value: 34 -->
+        <EditTextPreference
+            android:key="@string/key_warning_temperature"
+            android:summary="@string/warning_temperature_summary"
+            android:title="@string/warning_temperature"
+            android:numeric="integer"/>
+    </PreferenceCategory>
+</PreferenceScreen>
