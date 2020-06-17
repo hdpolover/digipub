@@ -13,29 +13,81 @@
         android:orientation="vertical">
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/aboutIv"
+            android:id="@+id/logoIv"
             android:layout_gravity="center"
-            android:layout_width="250dp"
-            android:layout_height="250dp"
-            android:src="@drawable/hendra"/>
+            android:layout_width="170dp"
+            android:layout_height="170dp"
+            android:src="@drawable/digipub_logo"/>
 
         <TextView
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Suhendra"
+            android:text="@string/app_name"
             android:textColor="@android:color/black"
-            android:textSize="25sp"
+            android:textSize="30sp"
             android:textStyle="bold"/>
 
         <TextView
+            android:id="@+id/appVersionTv"
             android:layout_marginTop="10dp"
             android:gravity="center"
             android:textSize="16sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="hendrapolover@gmail.com"/>
+            android:text="Version 0000"/>
+
+        <LinearLayout
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="20sp"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/contactUsBtn"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/contact"
+                android:textColor="@color/colorPrimary"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="10dp"/>
+
+            <TextView
+                android:id="@+id/rateAppBtn"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/rate_app"
+                android:textColor="@color/colorPrimary"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="10dp"/>
+
+            <TextView
+                android:id="@+id/creditsBtn"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/credits"
+                android:textColor="@color/colorPrimary"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="10dp"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/copyrightTv"
+            android:layout_marginTop="30dp"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/copyright"/>
 
     </LinearLayout>
 

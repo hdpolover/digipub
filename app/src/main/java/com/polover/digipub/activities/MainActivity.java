@@ -24,6 +24,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.navigation.NavigationView;
 import com.polover.digipub.Constants;
 import com.polover.digipub.ForegroundService;
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private int sensorTemperature;
 
     private int measuringUnit;
+    MaterialButton stopStartButton;
 
     private BroadcastReceiver mBatInfoReceiver = new BroadcastReceiver() {
         @Override
@@ -61,6 +63,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        stopStartButton = findViewById(R.id.startTrackingBtn);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -104,19 +108,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         final TextView pitchView = findViewById(R.id.pitch);
         final TextView rollView = findViewById(R.id.roll);
 
-        getLifecycle().addObserver(new OrientationReporter(this, new OrientationConsumer() {
-            @Override
-            public void accept(float azimuth, float pitch, float roll) {
-                //azimuthView.setText(MainActivity.this.getString(R.string.float_value, azimuth));
-                //pitchView.setText(MainActivity.this.getString(R.string.float_value, pitch));
-                //rollView.setText(MainActivity.this.getString(R.string.float_value, roll));
-
-                azimuthView.setText("azimuth: " + azimuth);
-                pitchView.setText("pitch: " + pitch);
-                rollView.setText("roll: " + roll);
-
-            }
-        }));
+//        getLifecycle().addObserver(new OrientationReporter(this, new OrientationConsumer() {
+//            @Override
+//            public void accept(float azimuth, float pitch, float roll) {
+//                //azimuthView.setText(MainActivity.this.getString(R.string.float_value, azimuth));
+//                //pitchView.setText(MainActivity.this.getString(R.string.float_value, pitch));
+//                //rollView.setText(MainActivity.this.getString(R.string.float_value, roll));
+//
+//                azimuthView.setText("azimuth: " + azimuth);
+//                pitchView.setText("pitch: " + pitch);
+//                rollView.setText("roll: " + roll);
+//
+//            }
+//        }));
     }
 
     @Override
@@ -137,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private boolean isServiceRunning() {
         ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if ("com.polover.gurd.ForegroundService".equals(service.service.getClassName())) {
+            if ("com.polover.digipub.ForegroundService".equals(service.service.getClassName())) {
                 return true;
             }
         }
@@ -162,7 +166,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void updateButtonState() {
-        Button stopStartButton = findViewById(R.id.startTrackingBtn);
         if (isServiceRunning()) {
             stopStartButton.setText(getString(R.string.stop_tracking));
         } else {

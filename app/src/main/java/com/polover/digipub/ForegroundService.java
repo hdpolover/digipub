@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -159,11 +160,11 @@ public class ForegroundService extends Service {
                         .setAction(Constants.ACTION.STOPFOREGROUND_ACTION),
                 0);
 
-        NotificationCompat.Action action =
-                new NotificationCompat.Action.Builder(
-                        android.R.drawable.ic_dialog_info,
-                        getString(R.string.stop),
-                        stopServicePendingIntent).build();
+//        NotificationCompat.Action action =
+//                new NotificationCompat.Action.Builder(
+//                        android.R.drawable.ic_dialog_info,
+//                        getString(R.string.stop),
+//                        stopServicePendingIntent).build();
 
         RemoteViews customNotif = new RemoteViews(getPackageName(), R.layout.notif_custom);
         customNotif.setTextViewText(R.id.tempValueTv, temperature + "");
@@ -172,14 +173,16 @@ public class ForegroundService extends Service {
         return new NotificationCompat.Builder(this, Constants.CHANNEL_ID.MAIN_CHANNEL)
                 //.setContentTitle(getString(R.string.app_name))
                 //.setContentText(temperature + (mMeasuringUnit == Constants.MEASURING_UNIT.CELSIUS? "°C" : "°F"))
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setSmallIcon(R.drawable.digipub_logo)
+                .setLargeIcon(BitmapFactory.decodeResource(getApplicationContext().getResources(),
+                        R.mipmap.ic_logo_digipub))
                 .setCustomContentView(customNotif)
                 .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(Notification.CATEGORY_SERVICE)
                 .setChannelId(Constants.CHANNEL_ID.MAIN_CHANNEL)
                 .setContentIntent(openAppPendingIntent)
-                .addAction(action)
+                //.addAction(action)
                 .build();
     }
 

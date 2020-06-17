@@ -5,9 +5,9 @@ import android.annotation.TargetApi;
 public class Constants {
     public interface ACTION {
         String STARTFOREGROUND_ACTION =
-                "com.polover.gurd.action.startforeground";
+                "com.polover.digipub.action.startforeground";
         String STOPFOREGROUND_ACTION =
-                "com.polover.gurd.action.stopforeground";
+                "com.polover.digipub.action.stopforeground";
     }
 
     public interface NOTIFICATION_ID {
@@ -18,9 +18,9 @@ public class Constants {
     @TargetApi(26)
     public interface CHANNEL_ID {
         String MAIN_CHANNEL =
-                "com.polover.gurd.mainChannel";
+                "com.polover.digipub.mainChannel";
         String WARNING_CHANNEL =
-                "com.polover.gurd.warningChannel";
+                "com.polover.digipub.warningChannel";
     }
 
     public interface MEASURING_UNIT {

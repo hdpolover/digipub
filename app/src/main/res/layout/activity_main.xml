@@ -40,10 +40,11 @@
                     android:layout_height="wrap_content"
                     android:padding="20dp"
                     android:layout_gravity="center"
-                    android:text="Start Tracking"
+                    android:text= "@string/start_tracking"
                     android:textSize="20sp"
                     app:cornerRadius="30dp"
                     app:icon="@drawable/ic_play_full"
+                    android:elevation="20dp"
                     app:iconSize="40dp"
                     android:layout_marginBottom="50dp"
                     android:onClick="onStartStopTracking"/>
@@ -63,19 +64,19 @@
                             android:layout_width="40dp"
                             android:layout_height="40dp"
                             android:layout_weight="1"
-                            android:src="@drawable/ic_battery" />
+                            android:src="@drawable/ic_battery_orange" />
 
                         <ImageView
                             android:layout_width="40dp"
                             android:layout_height="40dp"
                             android:layout_weight="1"
-                            android:src="@drawable/ic_eye" />
+                            android:src="@drawable/ic_eye_orange" />
 
                         <ImageView
                             android:layout_width="40dp"
                             android:layout_height="40dp"
                             android:layout_weight="1"
-                            android:src="@drawable/ic_orientation" />
+                            android:src="@drawable/ic_orientation_orange" />
 
                     </LinearLayout>
 

@@ -26,11 +26,11 @@
             android:id="@+id/nav_settings"
             android:title="Settings" />
         <item
-            android:icon="@drawable/ic_guide_full"
+            android:icon="@drawable/ic_about_full"
             android:id="@+id/nav_guide"
             android:title="Guide" />
         <item
-            android:icon="@drawable/ic_about_full"
+            android:icon="@drawable/ic_info_full"
             android:id="@+id/nav_about"
             android:title="About" />
     </group>

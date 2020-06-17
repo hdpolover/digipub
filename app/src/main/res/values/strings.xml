@@ -54,4 +54,17 @@
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
 
     <string name="float_value">%.4f</string>
+
+    <!--    About page-->
+    <string name="copyright">&#169;</string>
+    <string name="polover">Polover</string>
+    <string name="contact">Contact Us</string>
+    <string name="rate_app">Rate App</string>
+    <string name="credits">Credits</string>
+
+    <!--    constants-->
+    <string name="start_foreground_action">com.polover.digipub.action.startforeground</string>
+    <string name="stop_foreground_action">com.polover.digipub.action.stopforeground</string>
+    <string name="main_channel">com.polover.digipub.mainChannel</string>
+    <string name="warning_channel">com.polover.digipub.warningChannel</string>
 </resources>
