@@ -101,7 +101,16 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center"
-                            android:text="50 F"
+                            android:text="@string/default_battery"
+                            android:textSize="20sp" />
+
+                        <TextView
+                            android:id="@+id/camDisTv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="@string/default_camera"
                             android:textSize="20sp" />
 
                         <TextView
@@ -109,15 +118,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center"
-                            android:text="20 cm"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:text="50 F"
+                            android:text="@string/default_rotation"
                             android:textSize="20sp" />
 
                     </LinearLayout>

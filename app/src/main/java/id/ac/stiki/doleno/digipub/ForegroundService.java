@@ -13,10 +13,14 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.os.Build;
+import android.os.Debug;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
 import id.ac.stiki.doleno.digipub.activities.MainActivity;
@@ -34,9 +38,18 @@ public class ForegroundService extends Service {
     private int mWarningTemperature;
     private int mMeasuringUnit;
 
+    private String cameraDistanceResultValue;
+    private float distanceValue;
+
+    private float azimuthValue;
+    private float pitchValue;
+    private float rollValue;
+    private String rotationResultValue;
+
     public SharedPreferences mSharedPref;
     private SharedPreferences.OnSharedPreferenceChangeListener listener =
             new SharedPreferences.OnSharedPreferenceChangeListener() {
+                @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
                 public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
                     if (key.equals(getString(R.string.key_warning_temperature))){
                         mWarningTemperature =
@@ -61,6 +74,7 @@ public class ForegroundService extends Service {
     }
 
     private BroadcastReceiver mBatInfoReceiver = new BroadcastReceiver(){
+        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         @Override
         public void onReceive(Context arg0, Intent intent) {
             //Temperature in Celsius or Fahrenheit.
@@ -76,9 +90,46 @@ public class ForegroundService extends Service {
     };
 
     BroadcastReceiver mCameraReceiver = new BroadcastReceiver() {
+        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         @Override
         public void onReceive(Context context, Intent intent) {
+            if ("id.ac.stiki.doleno.digipub.CAMERA_ACTION".equals(intent.getAction())) {
+                float distance = intent.getFloatExtra("id.ac.stiki.doleno.digipub.DISTANCE_VALUE", 0);
 
+                if (distance == 0) {
+                    cameraDistanceResultValue = "FACE UNDETECTED";
+                    distanceValue = 0;
+                }  else {
+                    cameraDistanceResultValue = distanceValue + " cm";
+                    distanceValue = distance;
+                }
+
+                updateNotification();
+                checkDistance();
+            }
+        }
+    };
+
+    BroadcastReceiver mOrientationReceiver = new BroadcastReceiver() {
+        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if ("id.ac.stiki.doleno.digipub.ROTATION_ACTION".equals(intent.getAction())) {
+                //rotation
+                float azimuth = intent.getFloatExtra("id.ac.stiki.doleno.digipub.AZIMUTH_VALUE", 0);
+                float pitch = intent.getFloatExtra("id.ac.stiki.doleno.digipub.PITCH_VALUE", 0);
+                float roll = intent.getFloatExtra("id.ac.stiki.doleno.digipub.ROLL_VALUE", 0);
+
+                Log.e("aaa", azimuth + ", " + pitch + ", " + roll);
+
+                //assign values
+                azimuthValue = azimuth;
+                pitchValue = pitch;
+                rollValue = roll;
+
+                checkRotation();
+                updateNotification();
+            }
         }
     };
 
@@ -87,6 +138,8 @@ public class ForegroundService extends Service {
         //Register the Battery Info receiver
         this.registerReceiver(this.mBatInfoReceiver,
                 new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        this.registerReceiver(this.mOrientationReceiver, new IntentFilter("id.ac.stiki.doleno.digipub.ROTATION_ACTION"));
+        this.registerReceiver(this.mCameraReceiver, new IntentFilter("id.ac.stiki.doleno.digipub.CAMERA_ACTION"));
 
         //Setup Preferences
         mSharedPref = PreferenceManager.getDefaultSharedPreferences(this);
@@ -113,6 +166,7 @@ public class ForegroundService extends Service {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public int onStartCommand(Intent intent, int flags, int startId){
         String action = intent.getAction();
@@ -142,8 +196,11 @@ public class ForegroundService extends Service {
     public void onDestroy() {
         mSharedPref.unregisterOnSharedPreferenceChangeListener(listener);
         unregisterReceiver(mBatInfoReceiver);
+        unregisterReceiver(mOrientationReceiver);
+        unregisterReceiver(mCameraReceiver);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private Notification createTrackingNotification(){
 
         PendingIntent openAppPendingIntent = PendingIntent.getActivity(
@@ -169,6 +226,8 @@ public class ForegroundService extends Service {
         RemoteViews customNotif = new RemoteViews(getPackageName(), R.layout.notif_custom);
         customNotif.setTextViewText(R.id.tempValueTv, temperature + "");
         customNotif.setTextViewText(R.id.tempUnitTv, mMeasuringUnit == Constants.MEASURING_UNIT.CELSIUS? "°C" : "°F");
+        customNotif.setTextViewText(R.id.rotationTv, rotationResultValue);
+        customNotif.setTextViewText(R.id.cameraTv, cameraDistanceResultValue);
 
         return new NotificationCompat.Builder(this, Constants.CHANNEL_ID.MAIN_CHANNEL)
                 //.setContentTitle(getString(R.string.app_name))
@@ -197,6 +256,7 @@ public class ForegroundService extends Service {
         notificationManager.createNotificationChannel(channel);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void updateNotification() {
         notificationManager.notify(
                 Constants.NOTIFICATION_ID.FOREGROUND_SERVICE,
@@ -214,6 +274,44 @@ public class ForegroundService extends Service {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void checkRotation() {
+        String condition = "";
+
+        if (pitchValue == 0 && rollValue == 0) {
+            condition = "UP FLAT";
+        } else if (pitchValue == 0 && (rollValue == 3 || rollValue == -3)) {
+            condition = "DOWN FLAT";
+        } else if (pitchValue > -0.01 && (rollValue > 0 && rollValue < 3)) {
+            condition = "LEFT ROLL";
+        } else if (pitchValue > -0.01 && (rollValue > -0.01 & rollValue < -3)) {
+            condition = "RIGHT ROLL";
+        }
+
+        rotationResultValue = condition;
+
+        if (condition.equals("LEFT ROLL") && !isNotificationDelivered && isNotificationEnabled) {
+            notificationManager.notify(
+                    Constants.NOTIFICATION_ID.ROTATION_ALERT,
+                    createRotationAlertNotification());
+            isNotificationDelivered = true;
+        } else if (!condition.equals("LEFT ROLL") && isNotificationDelivered) {
+            isNotificationDelivered = false;
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void checkDistance() {
+        if ((distanceValue < 150 && distanceValue != 0) && !isNotificationDelivered && isNotificationEnabled) {
+            notificationManager.notify(
+                    Constants.NOTIFICATION_ID.CAMERA_ALERT,
+                    createCameraAlertNotification());
+            isNotificationDelivered = true;
+        } else if (distanceValue >= 150 && isNotificationDelivered) {
+            isNotificationDelivered = false;
+        }
+    }
+
     private Notification createAlertNotification() {
 
         return new NotificationCompat.Builder(this, Constants.CHANNEL_ID.WARNING_CHANNEL)
@@ -221,6 +319,38 @@ public class ForegroundService extends Service {
                 .setContentText(getString(R.string.battery_too_hot_message))
                 .setStyle(new NotificationCompat.BigTextStyle()
                         .bigText(getString(R.string.battery_too_hot_message)))
+                .setSmallIcon(android.R.drawable.stat_sys_warning)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setCategory(Notification.CATEGORY_SYSTEM)
+                //.setVibrate(new long[] {0})
+                .setChannelId(Constants.CHANNEL_ID.WARNING_CHANNEL)
+                .build();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private Notification createRotationAlertNotification() {
+
+        return new NotificationCompat.Builder(this, Constants.CHANNEL_ID.WARNING_CHANNEL)
+                .setContentTitle(getString(R.string.rotation_alert_title))
+                .setContentText(getString(R.string.rotation_alert_message))
+                .setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText(getString(R.string.rotation_alert_message)))
+                .setSmallIcon(android.R.drawable.stat_sys_warning)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setCategory(Notification.CATEGORY_SYSTEM)
+                //.setVibrate(new long[] {0})
+                .setChannelId(Constants.CHANNEL_ID.WARNING_CHANNEL)
+                .build();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private Notification createCameraAlertNotification() {
+
+        return new NotificationCompat.Builder(this, Constants.CHANNEL_ID.WARNING_CHANNEL)
+                .setContentTitle(getString(R.string.camera_alert_title))
+                .setContentText(getString(R.string.camera_alert_message))
+                .setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText(getString(R.string.camera_alert_message)))
                 .setSmallIcon(android.R.drawable.stat_sys_warning)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(Notification.CATEGORY_SYSTEM)
@@ -236,4 +366,5 @@ public class ForegroundService extends Service {
 
         sendBroadcast(intent);
     }
+
 }

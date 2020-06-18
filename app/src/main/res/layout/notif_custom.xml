@@ -46,25 +46,12 @@
             android:layout_marginRight="5dp"/>
 
         <TextView
+            android:id="@+id/cameraTv"
             android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@android:color/black"
-            android:text="30"/>
-
-        <TextView
-            android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
-            android:text="&#176; "/>
-
-        <TextView
-            android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
-            android:text="F"/>
+            android:text="0 cm"/>
 
     </LinearLayout>
 
@@ -81,25 +68,12 @@
             android:layout_marginRight="5dp"/>
 
         <TextView
+            android:id="@+id/rotationTv"
             android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@android:color/black"
             android:text="30"/>
-
-        <TextView
-            android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
-            android:text="&#176; "/>
-
-        <TextView
-            android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
-            android:text="F"/>
 
     </LinearLayout>
 </LinearLayout>

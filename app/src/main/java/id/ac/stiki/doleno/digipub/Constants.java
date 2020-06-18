@@ -13,6 +13,8 @@ public class Constants {
     public interface NOTIFICATION_ID {
         int FOREGROUND_SERVICE = 101;
         int TEMPERATURE_ALERT = 102;
+        int ROTATION_ALERT = 103;
+        int CAMERA_ALERT = 104;
     }
 
     @TargetApi(26)

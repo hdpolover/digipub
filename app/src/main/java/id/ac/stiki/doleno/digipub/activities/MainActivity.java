@@ -1,15 +1,19 @@
 package id.ac.stiki.doleno.digipub.activities;
 
+import android.Manifest;
 import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.hardware.Camera;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,13 +24,29 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.google.android.gms.vision.CameraSource;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.navigation.NavigationView;
+
+import com.google.android.gms.vision.CameraSource;
+import com.google.android.gms.vision.Detector;
+import com.google.android.gms.vision.MultiProcessor;
+import com.google.android.gms.vision.Tracker;
+import com.google.android.gms.vision.face.Face;
+import com.google.android.gms.vision.face.FaceDetector;
+import com.google.android.gms.vision.face.Landmark;
+import com.google.android.gms.vision.face.LargestFaceFocusingProcessor;
+
+import java.io.IOException;
+
 import id.ac.stiki.doleno.digipub.Constants;
 import id.ac.stiki.doleno.digipub.ForegroundService;
+import id.ac.stiki.doleno.digipub.OrientationConsumer;
+import id.ac.stiki.doleno.digipub.OrientationReporter;
 import id.ac.stiki.doleno.digipub.R;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -35,11 +55,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private DrawerLayout drawer;
 
-    private TextView batTempTv;
+    private TextView batTempTv, camDisTv;
     private int sensorTemperature;
 
     private int measuringUnit;
     MaterialButton stopStartButton;
+
+    String azimuthValue;
+
+    float F = 1f;           //focal length
+    float sensorX, sensorY; //camera sensor dimensions
+    float angleX, angleY;
+    float distance;
 
     private BroadcastReceiver mBatInfoReceiver = new BroadcastReceiver() {
         @Override
@@ -48,6 +75,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             updateMainText();
         }
     };
+
+//    BroadcastReceiver mOrientationReceiver = new BroadcastReceiver() {
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            if ("id.ac.stiki.doleno.digipub.ROTATION_ACTION".equals(intent.getAction())) {
+//                String tex = azimuthValue;
+//                Toast.makeText(context, tex, Toast.LENGTH_SHORT).show();
+//            }
+//        }
+//    };
 
     private BroadcastReceiver mServiceStoppedReceiver = new BroadcastReceiver() {
         @Override
@@ -75,19 +112,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-//        if (savedInstanceState == null) {
-//            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-//                    new MainFragment()).commit();
-//            //navigationView.setCheckedItem(R.id.nav);
-//        }
-
-        //TODO:Change adMob app id to a real one
-        //MobileAds.initialize(this, getString(R.string.admob_app_id));
-
         measuringUnit = getMeasuringUnit();
 
         //The main temperature TextView
         batTempTv = findViewById(R.id.batTempTv);
+        camDisTv = findViewById(R.id.camDisTv);
 
         //Register the Battery Info receiver
         this.registerReceiver(this.mBatInfoReceiver,
@@ -96,28 +125,39 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         this.registerReceiver(this.mServiceStoppedReceiver,
                 new IntentFilter(Constants.ACTION.STOPFOREGROUND_ACTION));
 
-//        //TODO: Change Banner id to a real one
-//        AdView adBanner = findViewById(R.id.adBanner);
-//        AdRequest adRequest = new AdRequest.Builder().build();
-//        adBanner.loadAd(adRequest);
-
         final TextView azimuthView = findViewById(R.id.azimuth);
         final TextView pitchView = findViewById(R.id.pitch);
         final TextView rollView = findViewById(R.id.roll);
 
-//        getLifecycle().addObserver(new OrientationReporter(this, new OrientationConsumer() {
-//            @Override
-//            public void accept(float azimuth, float pitch, float roll) {
-//                //azimuthView.setText(MainActivity.this.getString(R.string.float_value, azimuth));
-//                //pitchView.setText(MainActivity.this.getString(R.string.float_value, pitch));
-//                //rollView.setText(MainActivity.this.getString(R.string.float_value, roll));
-//
-//                azimuthView.setText("azimuth: " + azimuth);
-//                pitchView.setText("pitch: " + pitch);
-//                rollView.setText("roll: " + roll);
-//
-//            }
-//        }));
+        getLifecycle().addObserver(new OrientationReporter(this, new OrientationConsumer() {
+            @Override
+            public void accept(float azimuth, float pitch, float roll) {
+                azimuthView.setText("azimuth: " + azimuth);
+                pitchView.setText("pitch: " + pitch);
+                rollView.setText("roll: " + roll);
+
+                sendRotationBroadcast(azimuth, pitch, roll);
+            }
+        }));
+
+        initCameraTracker();
+
+    }
+
+    void sendRotationBroadcast(float a, float p, float r) {
+        Intent intent = new Intent("id.ac.stiki.doleno.digipub.ROTATION_ACTION");
+        intent.putExtra("id.ac.stiki.doleno.digipub.AZIMUTH_VALUE", a);
+        intent.putExtra("id.ac.stiki.doleno.digipub.PITCH_VALUE", p);
+        intent.putExtra("id.ac.stiki.doleno.digipub.ROLL_VALUE", r);
+
+        sendBroadcast(intent);
+    }
+
+    void sendCameraBroadcast() {
+        Intent intent = new Intent("id.ac.stiki.doleno.digipub.CAMERA_ACTION");
+        intent.putExtra("id.ac.stiki.doleno.digipub.DISTANCE_VALUE", distance);
+
+        sendBroadcast(intent);
     }
 
     @Override
@@ -130,8 +170,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         unregisterReceiver(mBatInfoReceiver);
+        super.onDestroy();
     }
 
 
@@ -237,5 +277,127 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
             }, 2000);
         }
+    }
+
+    void initCameraTracker() {
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 1);
+            Toast.makeText(this, "Grant Permission and restart app", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            Camera camera = frontCam();
+            Camera.Parameters campar = camera.getParameters();
+            F = campar.getFocalLength();
+            angleX = campar.getHorizontalViewAngle();
+            angleY = campar.getVerticalViewAngle();
+            sensorX = (float) (Math.tan(Math.toRadians(angleX/2))*2*F);
+            sensorY = (float) (Math.tan(Math.toRadians(angleY/2))*2*F);
+            camera.stopPreview();
+            camera.release();
+            createCameraSource();
+        }
+    }
+
+    private Camera frontCam() {
+        int cameraCount = 0;
+        Camera cam = null;
+        Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
+        cameraCount = Camera.getNumberOfCameras();
+        for (int camIdx = 0; camIdx < cameraCount; camIdx++) {
+            Camera.getCameraInfo(camIdx, cameraInfo);
+            Log.v("CAMID", camIdx+"");
+            if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+                try {
+                    cam = Camera.open(camIdx);
+                } catch (RuntimeException e) {
+                    Log.e("FAIL", "Camera failed to open: " + e.getLocalizedMessage());
+                }
+            }
+        }
+
+        return cam;
+    }
+
+
+    public void createCameraSource() {
+        FaceDetector detector = new FaceDetector.Builder(this)
+                .setTrackingEnabled(true)
+                .setClassificationType(FaceDetector.ALL_CLASSIFICATIONS)
+                .setLandmarkType(FaceDetector.ALL_LANDMARKS)
+                .setMode(FaceDetector.FAST_MODE)
+                .build();
+        detector.setProcessor(new LargestFaceFocusingProcessor(detector, new FaceTracker()));
+
+        CameraSource cameraSource = new CameraSource.Builder(this, detector)
+                .setRequestedPreviewSize(1024, 768)
+                .setFacing(CameraSource.CAMERA_FACING_FRONT)
+                .setRequestedFps(30.0f)
+                .build();
+
+        try {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
+            cameraSource.start();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private class FaceTracker extends Tracker<Face> {
+
+        private FaceTracker() {
+
+        }
+
+        @Override
+        public void onUpdate(Detector.Detections<Face> detections, Face face) {
+            float p =(float) Math.sqrt(
+                    (Math.pow((face.getLandmarks().get(Landmark.LEFT_EYE).getPosition().x-
+                            face.getLandmarks().get(Landmark.RIGHT_EYE).getPosition().x), 2)+
+                            Math.pow((face.getLandmarks().get(Landmark.LEFT_EYE).getPosition().y-
+                                    face.getLandmarks().get(Landmark.RIGHT_EYE).getPosition().y), 2)));
+
+            float H = 63;
+            float d = F*(H/sensorX)*(768/(2*p));
+
+            showStatus("focal length: "+F+
+                    "\nsensor width: "+sensorX
+                    +"\nd: "+String.format("%.0f",d)+"mm");
+
+            distance = d;
+            sendCameraBroadcast();
+        }
+
+        @Override
+        public void onMissing(Detector.Detections<Face> detections) {
+            super.onMissing(detections);
+            showStatus("face not detected");
+            distance = 0;
+            sendCameraBroadcast();
+        }
+
+        @Override
+        public void onDone() {
+            super.onDone();
+        }
+    }
+
+
+    public void showStatus(final String message) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                camDisTv.setText(message);
+            }
+        });
     }
 }

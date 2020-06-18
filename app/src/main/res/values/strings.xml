@@ -67,4 +67,18 @@
     <string name="stop_foreground_action">com.polover.digipub.action.stopforeground</string>
     <string name="main_channel">com.polover.digipub.mainChannel</string>
     <string name="warning_channel">com.polover.digipub.warningChannel</string>
+
+    <string name="rotation_alert_title">Unhealthy phone orientation detected!</string>
+    <string name="rotation_alert_message">Using phone while in laying position is not recommended.</string>
+
+    <string name="camera_alert_title">Phone too close to face!</string>
+    <string name="camera_alert_message">Staring at your screen in such a short distance is harmful for eyes.</string>
+
+    <string name="default_battery">0</string>
+    <string name="default_camera">0</string>
+    <string name="default_rotation">0</string>
+
+    <string name="credits_title">Credits</string>
+    <string name="credits_content">Thanks to...</string>
+    <string name="ok_credits">OK</string>
 </resources>

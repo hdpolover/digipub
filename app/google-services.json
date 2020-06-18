@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "362693968743",
+    "firebase_url": "https://digipub-48b96.firebaseio.com",
+    "project_id": "digipub-48b96",
+    "storage_bucket": "digipub-48b96.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:362693968743:android:8ea2002b959aaedcbe25c2",
+        "android_client_info": {
+          "package_name": "id.ac.stiki.doleno.digipub"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "362693968743-ojqufhursag1kr30vrlrucu1ecg8nb3b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "id.ac.stiki.doleno.digipub",
+            "certificate_hash": "44bc660508a75fc56c9cdd473a702c6ae03975b7"
+          }
+        },
+        {
+          "client_id": "362693968743-rtts8qcprc8ic7kkdql53lkvhjofhvk1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPdwxkK54y6HSJUtl7iUhg9peX_8p8_hU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "362693968743-rtts8qcprc8ic7kkdql53lkvhjofhvk1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
