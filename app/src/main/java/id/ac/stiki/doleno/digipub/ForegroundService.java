@@ -1,4 +1,4 @@
-package com.polover.digipub;
+package id.ac.stiki.doleno.digipub;
 
 import android.annotation.TargetApi;
 import android.app.Notification;
@@ -19,7 +19,7 @@ import android.widget.RemoteViews;
 
 import androidx.core.app.NotificationCompat;
 
-import com.polover.digipub.activities.MainActivity;
+import id.ac.stiki.doleno.digipub.activities.MainActivity;
 
 public class ForegroundService extends Service {
 
@@ -65,7 +65,7 @@ public class ForegroundService extends Service {
         public void onReceive(Context arg0, Intent intent) {
             //Temperature in Celsius or Fahrenheit.
             sensorTemperature = intent.getIntExtra("temperature", 250) / 10;
-            if (mMeasuringUnit==Constants.MEASURING_UNIT.CELSIUS) {
+            if (mMeasuringUnit== Constants.MEASURING_UNIT.CELSIUS) {
                 temperature = sensorTemperature;
             } else {
                 temperature = (int) (sensorTemperature * 1.8 +32);
@@ -216,7 +216,7 @@ public class ForegroundService extends Service {
 
     private Notification createAlertNotification() {
 
-        return new NotificationCompat.Builder(this,Constants.CHANNEL_ID.WARNING_CHANNEL)
+        return new NotificationCompat.Builder(this, Constants.CHANNEL_ID.WARNING_CHANNEL)
                 .setContentTitle(getString(R.string.battery_too_hot_title))
                 .setContentText(getString(R.string.battery_too_hot_message))
                 .setStyle(new NotificationCompat.BigTextStyle()

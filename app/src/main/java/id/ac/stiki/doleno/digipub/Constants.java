@@ -1,13 +1,13 @@
-package com.polover.digipub;
+package id.ac.stiki.doleno.digipub;
 
 import android.annotation.TargetApi;
 
 public class Constants {
     public interface ACTION {
         String STARTFOREGROUND_ACTION =
-                "com.polover.digipub.action.startforeground";
+                "id.ac.stiki.doleno.digipub.action.startforeground";
         String STOPFOREGROUND_ACTION =
-                "com.polover.digipub.action.stopforeground";
+                "id.ac.stiki.doleno.digipub.action.stopforeground";
     }
 
     public interface NOTIFICATION_ID {
@@ -18,9 +18,9 @@ public class Constants {
     @TargetApi(26)
     public interface CHANNEL_ID {
         String MAIN_CHANNEL =
-                "com.polover.digipub.mainChannel";
+                "id.ac.stiki.doleno.digipub.mainChannel";
         String WARNING_CHANNEL =
-                "com.polover.digipub.warningChannel";
+                "id.ac.stiki.doleno.digipub.warningChannel";
     }
 
     public interface MEASURING_UNIT {

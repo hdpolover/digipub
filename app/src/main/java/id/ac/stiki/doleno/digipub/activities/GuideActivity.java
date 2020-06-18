@@ -1,11 +1,11 @@
-package com.polover.digipub.activities;
+package id.ac.stiki.doleno.digipub.activities;
+
+import android.os.Bundle;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.os.Bundle;
-
-import com.polover.digipub.R;
+import id.ac.stiki.doleno.digipub.R;
 
 public class GuideActivity extends AppCompatActivity {
 

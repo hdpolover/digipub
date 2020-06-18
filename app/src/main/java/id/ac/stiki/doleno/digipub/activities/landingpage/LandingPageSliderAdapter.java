@@ -1,4 +1,4 @@
-package com.polover.digipub.activities.landingpage;
+package id.ac.stiki.doleno.digipub.activities.landingpage;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,7 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
 
-import com.polover.digipub.R;
+import id.ac.stiki.doleno.digipub.R;
 
 public class LandingPageSliderAdapter extends PagerAdapter {
 

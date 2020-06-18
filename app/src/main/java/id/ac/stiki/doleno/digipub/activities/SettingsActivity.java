@@ -1,6 +1,4 @@
-package com.polover.digipub.activities;
-
-import androidx.appcompat.app.AppCompatActivity;
+package id.ac.stiki.doleno.digipub.activities;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -11,8 +9,10 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.view.MenuItem;
 
-import com.polover.digipub.Constants;
-import com.polover.digipub.R;
+import androidx.appcompat.app.AppCompatActivity;
+
+import id.ac.stiki.doleno.digipub.Constants;
+import id.ac.stiki.doleno.digipub.R;
 
 public class SettingsActivity extends AppCompatActivity {
 

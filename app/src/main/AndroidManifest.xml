@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.polover.digipub">
+    package="id.ac.stiki.doleno.digipub">
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -21,16 +21,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.polover.digipub.activities.landingpage.LandingPageActivity"
+            android:name="id.ac.stiki.doleno.digipub.activities.landingpage.LandingPageActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name="com.polover.digipub.activities.GuideActivity" />
-        <activity android:name="com.polover.digipub.activities.AboutActivity" />
-        <activity android:name="com.polover.digipub.activities.ProfileActivity" />
+        <activity android:name="id.ac.stiki.doleno.digipub.activities.GuideActivity" />
+        <activity android:name="id.ac.stiki.doleno.digipub.activities.AboutActivity" />
+        <activity android:name="id.ac.stiki.doleno.digipub.activities.ProfileActivity" />
         <activity
-            android:name="com.polover.digipub.activities.SettingsActivity"
+            android:name="id.ac.stiki.doleno.digipub.activities.SettingsActivity"
             android:label="@string/title_activity_settings" />
         <activity
-            android:name="com.polover.digipub.activities.SplashScreenActivity"
+            android:name="id.ac.stiki.doleno.digipub.activities.SplashScreenActivity"
             android:theme="@style/AppThemeNo">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,11 +39,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.polover.digipub.activities.MainActivity"
+            android:name="id.ac.stiki.doleno.digipub.activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <receiver
-            android:name="com.polover.digipub.BootCompletedReceiver"
+            android:name="id.ac.stiki.doleno.digipub.BootCompletedReceiver"
             android:exported="false">
 
             <!-- Listening the BOOT_COMPLETED action for legacy pre-N devices -->
@@ -53,7 +53,7 @@
         </receiver>
 
         <service
-            android:name="com.polover.digipub.ForegroundService"
+            android:name="id.ac.stiki.doleno.digipub.ForegroundService"
             android:enabled="true"
             android:exported="false" />
     </application>

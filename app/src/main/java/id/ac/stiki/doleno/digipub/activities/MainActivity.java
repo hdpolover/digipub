@@ -1,11 +1,4 @@
-package com.polover.digipub.activities;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
+package id.ac.stiki.doleno.digipub.activities;
 
 import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
@@ -20,17 +13,21 @@ import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.navigation.NavigationView;
-import com.polover.digipub.Constants;
-import com.polover.digipub.ForegroundService;
-import com.polover.digipub.OrientationConsumer;
-import com.polover.digipub.OrientationReporter;
-import com.polover.digipub.R;
+import id.ac.stiki.doleno.digipub.Constants;
+import id.ac.stiki.doleno.digipub.ForegroundService;
+import id.ac.stiki.doleno.digipub.R;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -141,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private boolean isServiceRunning() {
         ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if ("com.polover.digipub.ForegroundService".equals(service.service.getClassName())) {
+            if ("id.ac.stiki.doleno.digipub.ForegroundService".equals(service.service.getClassName())) {
                 return true;
             }
         }

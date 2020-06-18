@@ -1,10 +1,10 @@
-package com.polover.digipub.activities;
-
-import androidx.appcompat.app.AppCompatActivity;
+package id.ac.stiki.doleno.digipub.activities;
 
 import android.os.Bundle;
 
-import com.polover.digipub.R;
+import androidx.appcompat.app.AppCompatActivity;
+
+import id.ac.stiki.doleno.digipub.R;
 
 public class ProfileActivity extends AppCompatActivity {
 

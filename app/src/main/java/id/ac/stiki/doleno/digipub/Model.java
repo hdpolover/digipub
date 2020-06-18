@@ -1,4 +1,4 @@
-package com.polover.digipub;
+package id.ac.stiki.doleno.digipub;
 
 import java.util.Locale;
 

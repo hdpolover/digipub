@@ -1,13 +1,12 @@
-package com.polover.digipub.activities;
-
-import androidx.appcompat.app.AppCompatActivity;
+package id.ac.stiki.doleno.digipub.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 
-import com.polover.digipub.R;
-import com.polover.digipub.activities.landingpage.LandingPageActivity;
+import androidx.appcompat.app.AppCompatActivity;
+
+import id.ac.stiki.doleno.digipub.R;
 
 public class SplashScreenActivity extends AppCompatActivity {
 

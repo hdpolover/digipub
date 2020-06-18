@@ -1,7 +1,4 @@
-package com.polover.digipub.activities;
-
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
+package id.ac.stiki.doleno.digipub.activities;
 
 import android.os.Bundle;
 import android.view.View;
@@ -9,9 +6,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.bumptech.glide.Glide;
-import com.polover.digipub.BuildConfig;
-import com.polover.digipub.R;
+import id.ac.stiki.doleno.digipub.BuildConfig;
+import id.ac.stiki.doleno.digipub.R;
 
 import java.util.Calendar;
 

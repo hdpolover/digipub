@@ -1,7 +1,4 @@
-package com.polover.digipub.activities.landingpage;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.viewpager.widget.ViewPager;
+package id.ac.stiki.doleno.digipub.activities.landingpage;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,8 +8,12 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.polover.digipub.R;
-import com.polover.digipub.activities.MainActivity;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.ViewPager;
+
+import id.ac.stiki.doleno.digipub.R;
+
+import id.ac.stiki.doleno.digipub.activities.MainActivity;
 
 public class LandingPageActivity extends AppCompatActivity {
 
