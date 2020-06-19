@@ -10,9 +10,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:id="@+id/guestLayout">
+        android:id="@+id/userLayout">
 
-
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/default_avatar"/>
 
 
     </LinearLayout>

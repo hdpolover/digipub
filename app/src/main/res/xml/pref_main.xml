@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <PreferenceCategory android:title="@string/general">
         <!-- Measuring unit List -->
         <!-- Default value: Celsius -->
@@ -34,7 +35,11 @@
         <EditTextPreference
             android:key="@string/key_warning_temperature"
             android:summary="@string/warning_temperature_summary"
-            android:title="@string/warning_temperature"
-            android:numeric="integer"/>
+            android:title="@string/warning_temperature" />
     </PreferenceCategory>
+
+    <Preference
+        app:key="feedback"
+        app:title="Send feedback"
+        app:summary="Report technical issues or suggest new features"/>
 </PreferenceScreen>

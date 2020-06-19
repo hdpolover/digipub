@@ -2,88 +2,43 @@ package id.ac.stiki.doleno.digipub.activities;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.EditTextPreference;
-import android.preference.ListPreference;
-import android.preference.Preference;
-import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
 import android.view.MenuItem;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.EditTextPreference;
+import androidx.preference.ListPreference;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceManager;
 
 import id.ac.stiki.doleno.digipub.Constants;
 import id.ac.stiki.doleno.digipub.R;
+
+import static androidx.preference.PreferenceManager.*;
 
 public class SettingsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_settings);
 
         if(getSupportActionBar() != null){
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
         // Load settings fragment
-        getFragmentManager().beginTransaction().replace(android.R.id.content, new MainPreferenceFragment()).commit();
+        //getFragmentManager().beginTransaction().replace(android.R.id.content, new MySettingsFragment()).commit();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.settings_container, new MySettingsFragment())
+                .commit();
     }
 
-    public static class MainPreferenceFragment extends PreferenceFragment {
-
-        private SharedPreferences.OnSharedPreferenceChangeListener listener =
-                new SharedPreferences.OnSharedPreferenceChangeListener() {
-                    public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-                        if (key.equals(getString(R.string.key_measuring_unit))){
-                            String preferenceValue = prefs.getString(getString(R.string.key_measuring_unit), Constants.DEFAULT_VALUES.MEASURING_UNIT);
-                            int previousWarningTemperature =
-                                    Integer.parseInt(prefs.getString(getString(R.string.key_warning_temperature), Constants.DEFAULT_VALUES.WARNING_TEMPERATURE));
-                            if(Integer.parseInt(preferenceValue) == Constants.MEASURING_UNIT.CELSIUS){
-                                int newWarningTemperature = (int)Math.round((previousWarningTemperature-32) / 1.8);
-                                prefs.edit().putString("key_warning_temperature",Integer.toString(newWarningTemperature)).apply();
-                            } else {
-                                int newWarningTemperature = (int)(previousWarningTemperature*1.8 +32);
-                                prefs.edit().putString("key_warning_temperature",Integer.toString(newWarningTemperature)).apply();
-                            }
-                        }
-                    }
-                };
-
-        @Override
-        public void onCreate(final Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_main);
-
-            //Should stay before registering the OnSharedPreferenceChangeListener
-            setDefaultValues();
-
-            PreferenceManager.getDefaultSharedPreferences(getActivity())
-                    .registerOnSharedPreferenceChangeListener(listener);
-
-            // Measuring unit change listener
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.key_measuring_unit)));
-
-            // Warning temperature change listener
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.key_warning_temperature)));
-        }
-
-        @Override
-        public void onDestroy() {
-            super.onDestroy();
-            PreferenceManager.getDefaultSharedPreferences(getActivity())
-                    .unregisterOnSharedPreferenceChangeListener(listener);
-        }
-
-        private void setDefaultValues(){
-            EditTextPreference warningTemperaturePref = (EditTextPreference) findPreference(getString(R.string.key_warning_temperature));
-            ListPreference measuringUnitPref = (ListPreference) findPreference(getString(R.string.key_measuring_unit));
-            if (warningTemperaturePref.getText() == null){
-                warningTemperaturePref.setText(Constants.DEFAULT_VALUES.WARNING_TEMPERATURE);
-            }
-            if (measuringUnitPref.getValue() == null){
-                measuringUnitPref.setValue(Constants.DEFAULT_VALUES.MEASURING_UNIT);
-            }
-        }
-    }
+//    public static class MainPreferenceFragment extends PreferenceFragmentCompat {
+//
+//
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -93,12 +48,11 @@ public class SettingsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private static void bindPreferenceSummaryToValue(Preference preference) {
+    public static void bindPreferenceSummaryToValue(Preference preference) {
         preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
 
         sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
-                PreferenceManager
-                        .getDefaultSharedPreferences(preference.getContext())
+                getDefaultSharedPreferences(preference.getContext())
                         .getString(preference.getKey(), ""));
     }
 

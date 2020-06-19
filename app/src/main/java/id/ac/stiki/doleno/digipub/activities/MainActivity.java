@@ -1,6 +1,7 @@
 package id.ac.stiki.doleno.digipub.activities;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -21,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -30,6 +32,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.navigation.NavigationView;
 
 import com.google.android.gms.vision.CameraSource;
@@ -63,6 +66,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     String azimuthValue;
 
+    MaterialCardView batteryCard, cameraDisCard, rotationCard;
+
     float F = 1f;           //focal length
     float sensorX, sensorY; //camera sensor dimensions
     float angleX, angleY;
@@ -75,16 +80,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             updateMainText();
         }
     };
-
-//    BroadcastReceiver mOrientationReceiver = new BroadcastReceiver() {
-//        @Override
-//        public void onReceive(Context context, Intent intent) {
-//            if ("id.ac.stiki.doleno.digipub.ROTATION_ACTION".equals(intent.getAction())) {
-//                String tex = azimuthValue;
-//                Toast.makeText(context, tex, Toast.LENGTH_SHORT).show();
-//            }
-//        }
-//    };
 
     private BroadcastReceiver mServiceStoppedReceiver = new BroadcastReceiver() {
         @Override
@@ -118,6 +113,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         batTempTv = findViewById(R.id.batTempTv);
         camDisTv = findViewById(R.id.camDisTv);
 
+        batteryCard = findViewById(R.id.batteryCard);
+        cameraDisCard = findViewById(R.id.cameraDisCard);
+        rotationCard = findViewById(R.id.rotationCard);
+
         //Register the Battery Info receiver
         this.registerReceiver(this.mBatInfoReceiver,
                 new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
@@ -125,22 +124,35 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         this.registerReceiver(this.mServiceStoppedReceiver,
                 new IntentFilter(Constants.ACTION.STOPFOREGROUND_ACTION));
 
-        final TextView azimuthView = findViewById(R.id.azimuth);
-        final TextView pitchView = findViewById(R.id.pitch);
-        final TextView rollView = findViewById(R.id.roll);
-
         getLifecycle().addObserver(new OrientationReporter(this, new OrientationConsumer() {
             @Override
             public void accept(float azimuth, float pitch, float roll) {
-                azimuthView.setText("azimuth: " + azimuth);
-                pitchView.setText("pitch: " + pitch);
-                rollView.setText("roll: " + roll);
-
                 sendRotationBroadcast(azimuth, pitch, roll);
             }
         }));
 
         initCameraTracker();
+
+        batteryCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, BatteryActivity.class));
+            }
+        });
+
+        cameraDisCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, CameraDistanceActivity.class));
+            }
+        });
+
+        rotationCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, RotationActivity.class));
+            }
+        });
 
     }
 
@@ -231,10 +243,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.nav_profile:
-                Toast.makeText(this, "Profile", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(this, ProfileActivity.class));
                 break;
             case R.id.nav_history:
-                Toast.makeText(this, "History", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(this, HistoryActivity.class));
                 break;
             case R.id.nav_settings:
                 startActivity(new Intent(this, SettingsActivity.class));
@@ -318,7 +330,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return cam;
     }
 
-
     public void createCameraSource() {
         FaceDetector detector = new FaceDetector.Builder(this)
                 .setTrackingEnabled(true)
@@ -369,18 +380,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             float H = 63;
             float d = F*(H/sensorX)*(768/(2*p));
 
-            showStatus("focal length: "+F+
-                    "\nsensor width: "+sensorX
-                    +"\nd: "+String.format("%.0f",d)+"mm");
+//            showStatus("focal length: "+F+
+//                    "\nsensor width: "+sensorX
+//                    +"\nd: "+String.format("%.0f",d)+"mm");
 
-            distance = d;
+            float distanceInCm = d / 10;
+            showStatus(String.format("%.0f", distanceInCm)+" cm", true);
+
+            distance = distanceInCm;
             sendCameraBroadcast();
         }
 
         @Override
         public void onMissing(Detector.Detections<Face> detections) {
             super.onMissing(detections);
-            showStatus("face not detected");
+            showStatus("Face undetected", false);
             distance = 0;
             sendCameraBroadcast();
         }
@@ -391,13 +405,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-
-    public void showStatus(final String message) {
+    public void showStatus(final String message, final boolean isDetected) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                if (isDetected) {
+                    camDisTv.setTextSize(34);
+                } else {
+                    camDisTv.setTextSize(24);
+                }
+
                 camDisTv.setText(message);
             }
         });
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void showTooltipText(View view) {
+        if (view.getId() == R.id.batteryTip) {
+            view.setTooltipText(getResources().getString(R.string.menu_battery));
+        } else if (view.getId() == R.id.cameraTip) {
+            view.setTooltipText(getResources().getString(R.string.menu_camera));
+        } else if (view.getId() == R.id.orientationTip) {
+            view.setTooltipText(getResources().getString(R.string.menu_rotation));
+        }
     }
 }

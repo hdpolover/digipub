@@ -277,15 +277,28 @@ public class ForegroundService extends Service {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void checkRotation() {
         String condition = "";
+        int index;
 
         if (pitchValue == 0 && rollValue == 0) {
-            condition = "UP FLAT";
-        } else if (pitchValue == 0 && (rollValue == 3 || rollValue == -3)) {
-            condition = "DOWN FLAT";
-        } else if (pitchValue > -0.01 && (rollValue > 0 && rollValue < 3)) {
-            condition = "LEFT ROLL";
+            index = 0;
+            condition = "Up Flat";
+        } else if (pitchValue == 0 && (rollValue > 3 || rollValue < -3)) {
+            index = 1;
+            condition = "Down Flat";
+        } else if ((pitchValue > -0.4 && pitchValue < -1.3) && (rollValue > 0 && rollValue < 3)) {
+            index = 2;
+            condition = "Up Stand";
         } else if (pitchValue > -0.01 && (rollValue > -0.01 & rollValue < -3)) {
-            condition = "RIGHT ROLL";
+            index = 3;
+            condition = "Down Stand";
+        } else if (pitchValue > 0) {
+            index = 4;
+            condition = "Left Roll";
+        } else if (rollValue > 0) {
+            index = 5;
+            condition = "Right Roll";
+        } else if (pitchValue > 0) {
+            condition = "Right Roll";
         }
 
         rotationResultValue = condition;

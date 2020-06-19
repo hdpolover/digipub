@@ -20,17 +20,21 @@
         android:roundIcon="@drawable/digipub_logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".activities.RotationActivity"></activity>
+        <activity android:name=".activities.CameraDistanceActivity" />
+        <activity android:name=".activities.BatteryActivity" />
+        <activity android:name=".activities.HistoryActivity" />
         <activity
-            android:name="id.ac.stiki.doleno.digipub.activities.landingpage.LandingPageActivity"
+            android:name=".activities.landingpage.LandingPageActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name="id.ac.stiki.doleno.digipub.activities.GuideActivity" />
-        <activity android:name="id.ac.stiki.doleno.digipub.activities.AboutActivity" />
-        <activity android:name="id.ac.stiki.doleno.digipub.activities.ProfileActivity" />
+        <activity android:name=".activities.GuideActivity" />
+        <activity android:name=".activities.AboutActivity" />
+        <activity android:name=".activities.ProfileActivity" />
         <activity
-            android:name="id.ac.stiki.doleno.digipub.activities.SettingsActivity"
+            android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_settings" />
         <activity
-            android:name="id.ac.stiki.doleno.digipub.activities.SplashScreenActivity"
+            android:name=".activities.SplashScreenActivity"
             android:theme="@style/AppThemeNo">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,11 +43,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="id.ac.stiki.doleno.digipub.activities.MainActivity"
+            android:name=".activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <receiver
-            android:name="id.ac.stiki.doleno.digipub.BootCompletedReceiver"
+            android:name=".BootCompletedReceiver"
             android:exported="false">
 
             <!-- Listening the BOOT_COMPLETED action for legacy pre-N devices -->
@@ -53,7 +57,7 @@
         </receiver>
 
         <service
-            android:name="id.ac.stiki.doleno.digipub.ForegroundService"
+            android:name=".ForegroundService"
             android:enabled="true"
             android:exported="false" />
     </application>

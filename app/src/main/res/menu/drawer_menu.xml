@@ -18,7 +18,7 @@
         <item
             android:icon="@drawable/ic_about_full"
             android:id="@+id/nav_guide"
-            android:title="Guide" />
+            android:title="App Guide" />
         <item
             android:icon="@drawable/ic_info_full"
             android:id="@+id/nav_about"

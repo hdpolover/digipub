@@ -81,4 +81,10 @@
     <string name="credits_title">Credits</string>
     <string name="credits_content">Thanks to...</string>
     <string name="ok_credits">OK</string>
+
+    <string name="menu_battery">Battery Temperature</string>
+    <string name="menu_camera">Screen-to-face Distance</string>
+    <string name="menu_rotation">Phone Rotation</string>
+
+    <string name="no_account">You are a guest user. To save and view genererated results from this application, you need to sign up an account.</string>
 </resources>
