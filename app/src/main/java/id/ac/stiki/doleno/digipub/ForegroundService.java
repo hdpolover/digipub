@@ -97,10 +97,10 @@ public class ForegroundService extends Service {
                 float distance = intent.getFloatExtra("id.ac.stiki.doleno.digipub.DISTANCE_VALUE", 0);
 
                 if (distance == 0) {
-                    cameraDistanceResultValue = "FACE UNDETECTED";
+                    cameraDistanceResultValue = "Face undetected";
                     distanceValue = 0;
                 }  else {
-                    cameraDistanceResultValue = distanceValue + " cm";
+                    cameraDistanceResultValue = String.format("%.0f", distanceValue) + " cm";
                     distanceValue = distance;
                 }
 
@@ -119,8 +119,6 @@ public class ForegroundService extends Service {
                 float azimuth = intent.getFloatExtra("id.ac.stiki.doleno.digipub.AZIMUTH_VALUE", 0);
                 float pitch = intent.getFloatExtra("id.ac.stiki.doleno.digipub.PITCH_VALUE", 0);
                 float roll = intent.getFloatExtra("id.ac.stiki.doleno.digipub.ROLL_VALUE", 0);
-
-                Log.e("aaa", azimuth + ", " + pitch + ", " + roll);
 
                 //assign values
                 azimuthValue = azimuth;
@@ -226,8 +224,8 @@ public class ForegroundService extends Service {
         RemoteViews customNotif = new RemoteViews(getPackageName(), R.layout.notif_custom);
         customNotif.setTextViewText(R.id.tempValueTv, temperature + "");
         customNotif.setTextViewText(R.id.tempUnitTv, mMeasuringUnit == Constants.MEASURING_UNIT.CELSIUS? "°C" : "°F");
-        customNotif.setTextViewText(R.id.rotationTv, rotationResultValue);
         customNotif.setTextViewText(R.id.cameraTv, cameraDistanceResultValue);
+        customNotif.setTextViewText(R.id.rotationTv, rotationResultValue);
 
         return new NotificationCompat.Builder(this, Constants.CHANNEL_ID.MAIN_CHANNEL)
                 //.setContentTitle(getString(R.string.app_name))
@@ -277,7 +275,7 @@ public class ForegroundService extends Service {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void checkRotation() {
         String condition = "";
-        int index;
+        int index = 0;
 
         if (pitchValue == 0 && rollValue == 0) {
             index = 0;
@@ -285,42 +283,55 @@ public class ForegroundService extends Service {
         } else if (pitchValue == 0 && (rollValue > 3 || rollValue < -3)) {
             index = 1;
             condition = "Down Flat";
-        } else if ((pitchValue > -0.4 && pitchValue < -1.3) && (rollValue > 0 && rollValue < 3)) {
+        } else if ((pitchValue > 0 && pitchValue < 3) && (rollValue > 0)) {
             index = 2;
             condition = "Up Stand";
-        } else if (pitchValue > -0.01 && (rollValue > -0.01 & rollValue < -3)) {
+        } else if ((pitchValue > -0.5) && (pitchValue < -0.12) && rollValue > pitchValue) {
+            //warning
             index = 3;
             condition = "Down Stand";
-        } else if (pitchValue > 0) {
+        }else if ((pitchValue > -1.2) && (pitchValue < -0) && rollValue < 3) {
+            index = 7;
+            condition = "Down Stand";
+        } else if ((pitchValue > 0) && (pitchValue < 0.3) && ((rollValue > - 0.4) && (rollValue < -2))) {
+            //warning
             index = 4;
-            condition = "Left Roll";
-        } else if (rollValue > 0) {
+            condition = "Left roll";
+        } else if ((pitchValue > 0) && (pitchValue < 0.3) && ((rollValue > 1.4) && (rollValue < 2.2))) {
+            //warning
             index = 5;
+            condition = "Left Roll";
+        } else if (pitchValue < 0 && (rollValue < 3 && rollValue > 0)) {
+            index = 6;
             condition = "Right Roll";
-        } else if (pitchValue > 0) {
+        } else if (pitchValue < 0 && (rollValue < 0 && rollValue > -3)) {
             condition = "Right Roll";
+            index = 8;
+        } else {
+            index = 0;
+            condition = "---";
         }
 
         rotationResultValue = condition;
 
-        if (condition.equals("LEFT ROLL") && !isNotificationDelivered && isNotificationEnabled) {
+        if ((index == 4 || index == 5 || index == 3) && !isNotificationDelivered && isNotificationEnabled) {
             notificationManager.notify(
                     Constants.NOTIFICATION_ID.ROTATION_ALERT,
                     createRotationAlertNotification());
             isNotificationDelivered = true;
-        } else if (!condition.equals("LEFT ROLL") && isNotificationDelivered) {
+        } else if (isNotificationDelivered) {
             isNotificationDelivered = false;
         }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void checkDistance() {
-        if ((distanceValue < 150 && distanceValue != 0) && !isNotificationDelivered && isNotificationEnabled) {
+        if ((distanceValue < 15 && distanceValue != 0) && !isNotificationDelivered && isNotificationEnabled) {
             notificationManager.notify(
                     Constants.NOTIFICATION_ID.CAMERA_ALERT,
                     createCameraAlertNotification());
             isNotificationDelivered = true;
-        } else if (distanceValue >= 150 && isNotificationDelivered) {
+        } else if (distanceValue >= 15 && isNotificationDelivered) {
             isNotificationDelivered = false;
         }
     }
@@ -367,7 +378,7 @@ public class ForegroundService extends Service {
                 .setSmallIcon(android.R.drawable.stat_sys_warning)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(Notification.CATEGORY_SYSTEM)
-                .setVibrate(new long[] {0})
+                //.setVibrate(new long[] {0})
                 .setChannelId(Constants.CHANNEL_ID.WARNING_CHANNEL)
                 .build();
     }

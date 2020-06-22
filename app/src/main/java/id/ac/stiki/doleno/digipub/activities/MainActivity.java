@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private DrawerLayout drawer;
 
-    private TextView batTempTv, camDisTv;
+    private TextView batTempTv, camDisTv, rotationTv;
     private int sensorTemperature;
 
     private int measuringUnit;
@@ -112,6 +112,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //The main temperature TextView
         batTempTv = findViewById(R.id.batTempTv);
         camDisTv = findViewById(R.id.camDisTv);
+        rotationTv = findViewById(R.id.rotationTv);
 
         batteryCard = findViewById(R.id.batteryCard);
         cameraDisCard = findViewById(R.id.cameraDisCard);
@@ -127,6 +128,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getLifecycle().addObserver(new OrientationReporter(this, new OrientationConsumer() {
             @Override
             public void accept(float azimuth, float pitch, float roll) {
+                String condition = "";
+                if (pitch == 0 && roll == 0) {
+                    condition = "Up Flat";
+                } else if (pitch == 0 && (roll > 3 || roll < -3)) {
+                    condition = "Down Flat";
+                } else if ((pitch > 0 && pitch < 3) && (roll > 0)) {
+                    condition = "Up Stand";
+                } else if ((pitch > -0.5) && (pitch < -0.12) && roll > pitch) {
+                    condition = "Down Stand";
+                }else if ((pitch > -1.2) && (pitch < -0) && roll < 3) {
+                    condition = "Down Stand";
+                } else if ((pitch > 0) && (pitch < 0.3) && ((roll > - 0.4) && (roll < -2))) {
+                    condition = "Left roll";
+                } else if ((pitch > 0) && (pitch < 0.3) && ((roll > 1.4) && (roll < 2.2))) {
+                    condition = "Left Roll";
+                } else if (pitch < 0 && (roll < 3 && roll > 0)) {
+                    condition = "Right Roll";
+                } else if (pitch < 0 && (roll < 0 && roll > -3)) {
+                    condition = "Right Roll";
+                } else {
+                    condition = "---";
+                }
+
+                rotationTv.setText(condition);
                 sendRotationBroadcast(azimuth, pitch, roll);
             }
         }));
